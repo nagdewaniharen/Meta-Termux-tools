@@ -58,10 +58,10 @@ export async function renderHomepageContent(): Promise<string> {
         </div>
 
         <div class="platform-stats">
-            <div class="stat-item"><div class="stat-value">1000+</div><div class="stat-label">Stories</div></div>
-            <div class="stat-item"><div class="stat-value">50K+</div><div class="stat-label">Readers</div></div>
-            <div class="stat-item"><div class="stat-value">100+</div><div class="stat-label">Writers</div></div>
-            <div class="stat-item"><div class="stat-value">25</div><div class="stat-label">Categories</div></div>
+            <div class="stat-item"><div class="stat-value">8</div><div class="stat-label">Articles</div></div>
+            <div class="stat-item"><div class="stat-value">0</div><div class="stat-label">Readers</div></div>
+            <div class="stat-item"><div class="stat-value">1</div><div class="stat-label">Writer</div></div>
+            <div class="stat-item"><div class="stat-value">8</div><div class="stat-label">Categories</div></div>
         </div>
     </section>
 
