@@ -1,0 +1,151 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum PageStatus {
+  draft
+  published
+  archived
+}
+
+enum ScriptPosition {
+  head_start
+  head_end
+  body_start
+  body_end
+}
+
+enum ScriptStatus {
+  active
+  inactive
+}
+
+enum CampaignStatus {
+  draft
+  active
+  paused
+  archived
+}
+
+model Page {
+  id          String     @id @default(cuid())
+  slug        String     @unique
+  title       String
+  description String
+  status      PageStatus @default(draft)
+  draft_html  String?    @db.Text
+  live_html   String?    @db.Text
+  version     Int        @default(0)
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
+
+  scripts PageScript[]
+
+  @@map("pages")
+}
+
+model Script {
+  id          String         @id @default(cuid())
+  name        String
+  description String?
+  code        String         @db.Text
+  position    ScriptPosition
+  is_global   Boolean        @default(false)
+  status      ScriptStatus   @default(active)
+  created_at  DateTime       @default(now())
+  updated_at  DateTime       @updatedAt
+
+  page_scripts     PageScript[]
+  campaign_scripts CampaignScript[]
+  tracking_events  TrackingEvent[]
+
+  @@map("scripts")
+}
+
+model PageScript {
+  page_id   String
+  script_id String
+  order     Int    @default(0)
+
+  page   Page   @relation(fields: [page_id], references: [id], onDelete: Cascade)
+  script Script @relation(fields: [script_id], references: [id], onDelete: Cascade)
+
+  @@id([page_id, script_id])
+  @@map("page_scripts")
+}
+
+model Campaign {
+  id              String         @id @default(cuid())
+  name            String
+  description     String?
+  status          CampaignStatus @default(draft)
+  target_pages    Json           @default("[]")
+  target_keywords Json           @default("[]")
+  created_at      DateTime       @default(now())
+  updated_at      DateTime       @updatedAt
+
+  scripts         CampaignScript[]
+  tracking_events TrackingEvent[]
+
+  @@map("campaigns")
+}
+
+model CampaignScript {
+  campaign_id String
+  script_id   String
+  is_active   Boolean @default(true)
+  order       Int     @default(0)
+
+  campaign Campaign @relation(fields: [campaign_id], references: [id], onDelete: Cascade)
+  script   Script   @relation(fields: [script_id], references: [id], onDelete: Cascade)
+
+  @@id([campaign_id, script_id])
+  @@map("campaign_scripts")
+}
+
+model TrackingEvent {
+  id             String   @id @default(cuid())
+  page_slug      String
+  campaign_id    String?
+  script_id      String?
+  event_type     String   @default("pageview")
+  referrer       String?
+  user_agent     String?
+  ip_address     String?
+  country_code   String?
+  search_keyword String?
+  created_at     DateTime @default(now())
+
+  campaign Campaign? @relation(fields: [campaign_id], references: [id])
+  script   Script?   @relation(fields: [script_id], references: [id])
+
+  @@map("tracking_events")
+}
+
+enum ArticleStatus {
+  draft
+  published
+  archived
+}
+
+model Article {
+  id         String        @id @default(cuid())
+  title      String
+  body       String        @db.Text
+  excerpt    String        @db.Text
+  slug       String        @unique
+  tags       Json          @default("[]")
+  keywords   Json          @default("[]")
+  status     ArticleStatus @default(published)
+  created_at DateTime      @default(now())
+  updated_at DateTime      @updatedAt
+
+  @@map("articles")
+}
