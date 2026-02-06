@@ -81,12 +81,6 @@ export async function renderHomepageContent(): Promise<string> {
 
         <!-- sidebar -->
         <aside class="sidebar">
-            <div class="sidebar-section">
-                <h3 class="sidebar-title">Recent Updates</h3>
-                <div class="update-list">
-                    ${recentItems || '<p style="color:#737373;font-size:0.875rem;">Nothing new yet.</p>'}
-                </div>
-            </div>
 
             <div class="sidebar-section">
                 <h3 class="sidebar-title">Browse Topics</h3>
