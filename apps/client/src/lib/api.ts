@@ -56,7 +56,9 @@ async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
         throw new Error(error.error || 'Request failed')
     }
 
-    return res.json()
+    const json = await res.json()
+    // Server wraps responses in { success, data } - unwrap if present
+    return json.data !== undefined ? json.data : json
 }
 
 export const api = {
@@ -70,7 +72,7 @@ export const api = {
         delete: (id: string) =>
             apiFetch<{ success: boolean }>(`/scripts/${id}`, { method: 'DELETE' }),
         toggleStatus: (id: string, status: 'active' | 'inactive') =>
-            apiFetch<Script>(`/scripts/${id}/status`, { method: 'PUT', body: JSON.stringify({ status }) }),
+            apiFetch<Script>(`/scripts/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status }) }),
     },
 
     pages: {
