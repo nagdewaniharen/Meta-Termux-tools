@@ -1,3 +1,8 @@
+import { config } from 'dotenv'
+import { resolve } from 'path'
+
+config({ path: resolve(__dirname, '../.env.local') })
+
 import app from './app'
 
 const PORT = process.env.PORT || 3001

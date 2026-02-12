@@ -149,3 +149,32 @@ model Article {
 
   @@map("articles")
 }
+
+enum LandingPageStatus {
+  draft
+  published
+  archived
+}
+
+enum LandingPageTemplate {
+  landing
+  article
+}
+
+model LandingPage {
+  id             String            @id @default(cuid())
+  title          String
+  slug           String            @unique
+  keyword        String
+  description    String            @db.Text
+  template       LandingPageTemplate @default(landing)
+  creatives      Json              @default("[]")
+  generated_html String?           @db.Text
+  live_html      String?           @db.Text
+  status         LandingPageStatus @default(draft)
+  version        Int               @default(0)
+  created_at     DateTime          @default(now())
+  updated_at     DateTime          @updatedAt
+
+  @@map("landing_pages")
+}

@@ -7,12 +7,14 @@ import {
     FileCode2,
     Files,
     Target,
-    LogOut
+    LogOut,
+    Rocket
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navItems = [
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/dashboard/landing-pages', label: 'Landing Pages', icon: Rocket },
     { href: '/dashboard/scripts', label: 'Scripts', icon: FileCode2 },
     { href: '/dashboard/pages', label: 'Pages', icon: Files },
 ]

@@ -8,7 +8,7 @@ const router = Router()
 
 const VALID_SLUGS: string[] = Object.values(PAGE_SLUGS).filter((s) => s !== 'homepage')
 
-// ── helper: fire-and-forget pageview event ──────────────────
+// ── helper: fire-and-forget pageview event ─
 function firePageview(req: Request, pageSlug: string) {
   trackEvent({
     page_slug: pageSlug,

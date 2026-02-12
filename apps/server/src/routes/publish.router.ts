@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express'
-import { requireAuth }               from '@/lib/auth'
-import { toApiError }                from '@meta/shared'
+import { requireAuth } from '@/lib/auth'
+import { toApiError } from '@meta/shared'
 import {
   previewPage,
   publishPage,
@@ -17,6 +17,32 @@ const PREVIEW_BANNER =
   'font-weight:600;">PREVIEW MODE</div>'
 
 // GET /api/publish/:slug/status
+// GET /api/publish/:slug/status
+/**
+ * @swagger
+ * /publish/{slug}/status:
+ *   get:
+ *     summary: Get page publish status
+ *     tags: [Publish]
+ *     parameters:
+ *       - in: path
+ *         name: slug
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Publish status
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ */
 router.get('/:slug/status', async (req: Request, res: Response) => {
   try {
     await requireAuth(req)
@@ -29,6 +55,27 @@ router.get('/:slug/status', async (req: Request, res: Response) => {
 })
 
 // POST /api/publish/:slug/preview
+// POST /api/publish/:slug/preview
+/**
+ * @swagger
+ * /publish/{slug}/preview:
+ *   post:
+ *     summary: Preview a page (HTML)
+ *     tags: [Publish]
+ *     parameters:
+ *       - in: path
+ *         name: slug
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: HTML preview content
+ *         content:
+ *           text/html:
+ *             schema:
+ *               type: string
+ */
 router.post('/:slug/preview', async (req: Request, res: Response) => {
   try {
     await requireAuth(req)
@@ -41,6 +88,32 @@ router.post('/:slug/preview', async (req: Request, res: Response) => {
 })
 
 // POST /api/publish/:slug/publish
+// POST /api/publish/:slug/publish
+/**
+ * @swagger
+ * /publish/{slug}/publish:
+ *   post:
+ *     summary: Publish a page
+ *     tags: [Publish]
+ *     parameters:
+ *       - in: path
+ *         name: slug
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Page published successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ */
 router.post('/:slug/publish', async (req: Request, res: Response) => {
   try {
     await requireAuth(req)
@@ -53,6 +126,30 @@ router.post('/:slug/publish', async (req: Request, res: Response) => {
 })
 
 // POST /api/publish/:slug/unpublish
+// POST /api/publish/:slug/unpublish
+/**
+ * @swagger
+ * /publish/{slug}/unpublish:
+ *   post:
+ *     summary: Unpublish a page
+ *     tags: [Publish]
+ *     parameters:
+ *       - in: path
+ *         name: slug
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Page unpublished successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ */
 router.post('/:slug/unpublish', async (req: Request, res: Response) => {
   try {
     await requireAuth(req)
@@ -65,6 +162,30 @@ router.post('/:slug/unpublish', async (req: Request, res: Response) => {
 })
 
 // POST /api/publish/:slug/rollback
+// POST /api/publish/:slug/rollback
+/**
+ * @swagger
+ * /publish/{slug}/rollback:
+ *   post:
+ *     summary: Rollback page to previous version
+ *     tags: [Publish]
+ *     parameters:
+ *       - in: path
+ *         name: slug
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Page rolled back successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ */
 router.post('/:slug/rollback', async (req: Request, res: Response) => {
   try {
     await requireAuth(req)

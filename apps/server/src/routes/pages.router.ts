@@ -11,9 +11,62 @@ import {
   removeScriptFromPage,
 } from '@/services/page.service'
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Page:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *         slug:
+ *           type: string
+ *         title:
+ *           type: string
+ *         description:
+ *           type: string
+ *         status:
+ *           type: string
+ *           enum: [draft, published, archived]
+ *         version:
+ *           type: integer
+ */
 const router = Router()
 
 // GET /api/pages
+/**
+ * @swagger
+ * /pages:
+ *   get:
+ *     summary: Retrieve a list of pages
+ *     tags: [Pages]
+ *     parameters:
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 20
+ *       - in: query
+ *         name: offset
+ *         schema:
+ *           type: integer
+ *           default: 0
+ *     responses:
+ *       200:
+ *         description: A list of pages
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Page'
+ */
 router.get('/', async (req: Request, res: Response) => {
   try {
     await requireAuth(req)
@@ -31,6 +84,41 @@ router.get('/', async (req: Request, res: Response) => {
 })
 
 // POST /api/pages
+/**
+ * @swagger
+ * /pages:
+ *   post:
+ *     summary: Create a new page
+ *     tags: [Pages]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - title
+ *               - slug
+ *             properties:
+ *               title:
+ *                 type: string
+ *               slug:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Page created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   $ref: '#/components/schemas/Page'
+ */
 router.post('/', async (req: Request, res: Response) => {
   try {
     await requireAuth(req)
@@ -54,6 +142,31 @@ router.post('/', async (req: Request, res: Response) => {
 })
 
 // GET /api/pages/:id
+/**
+ * @swagger
+ * /pages/{id}:
+ *   get:
+ *     summary: Get a page by ID
+ *     tags: [Pages]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Page details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   $ref: '#/components/schemas/Page'
+ */
 router.get('/:id', async (req: Request, res: Response) => {
   try {
     await requireAuth(req)
@@ -66,6 +179,45 @@ router.get('/:id', async (req: Request, res: Response) => {
 })
 
 // PUT /api/pages/:id
+/**
+ * @swagger
+ * /pages/{id}:
+ *   put:
+ *     summary: Update a page
+ *     tags: [Pages]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               status:
+ *                 type: string
+ *                 enum: [draft, published, archived]
+ *     responses:
+ *       200:
+ *         description: Page updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   $ref: '#/components/schemas/Page'
+ */
 router.put('/:id', async (req: Request, res: Response) => {
   try {
     await requireAuth(req)

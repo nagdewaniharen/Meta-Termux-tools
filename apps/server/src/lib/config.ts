@@ -3,5 +3,5 @@ export function getSiteUrl(): string {
 }
 
 export function getR2PublicUrl(): string {
-  return process.env.R2_PUBLIC_URL || ''
+  return process.env.AWS_PUBLIC_URL || process.env.R2_PUBLIC_URL || ''
 }

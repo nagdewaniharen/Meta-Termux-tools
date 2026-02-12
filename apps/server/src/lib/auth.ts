@@ -53,3 +53,12 @@ export async function requireAuth(req: Request) {
 
   return user
 }
+
+export function isOwner(email?: string): boolean {
+  if (!email) return false
+  // For dev mode
+  if (email === 'admin@example.com' && !process.env.OWNER_EMAILS) return true
+
+  const owners = (process.env.OWNER_EMAILS || '').split(',').map(e => e.trim().toLowerCase())
+  return owners.includes(email.toLowerCase())
+}

@@ -139,6 +139,17 @@ export async function renderPage(pageSlug: string): Promise<string> {
     })
 
     if (!dbPage || dbPage.status !== 'published' || !dbPage.live_html) {
+      // Try finding a landing page
+      const landingPage = await prisma.landingPage.findUnique({
+        where: { slug: pageSlug },
+      })
+
+      if (landingPage && landingPage.status === 'published' && landingPage.live_html) {
+        // Landing pages are full HTML documents
+        const scripts = await getScriptsForPage(pageSlug)
+        return injectScriptsIntoHtml(landingPage.live_html, scripts)
+      }
+
       throw new Error(`Unknown page: ${pageSlug}`)
     }
 

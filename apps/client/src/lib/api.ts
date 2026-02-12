@@ -1,4 +1,4 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'
 
 export interface Script {
     id: string
@@ -43,17 +43,27 @@ export interface Campaign {
 }
 
 async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
+    const headers: HeadersInit = { ...options?.headers }
+
+    // Only set JSON content type if body is NOT FormData
+    if (!(options?.body instanceof FormData)) {
+        Object.assign(headers, { 'Content-Type': 'application/json' })
+    }
+
     const res = await fetch(`${API_BASE}${path}`, {
         ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options?.headers,
-        },
+        headers,
     })
 
     if (!res.ok) {
-        const error = await res.json().catch(() => ({ error: 'Request failed' }))
-        throw new Error(error.error || 'Request failed')
+        let errorMessage = 'Request failed'
+        try {
+            const errorBody = await res.json()
+            errorMessage = errorBody.error || errorBody.message || errorMessage
+        } catch {
+            errorMessage = `Request failed with status ${res.status}`
+        }
+        throw new Error(errorMessage)
     }
 
     const json = await res.json()
@@ -62,6 +72,7 @@ async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
 }
 
 export const api = {
+    // ... scripts, pages, campaigns ...
     scripts: {
         list: () => apiFetch<{ items: Script[]; total: number }>('/scripts'),
         get: (id: string) => apiFetch<Script>(`/scripts/${id}`),
@@ -104,4 +115,46 @@ export const api = {
         preview: (slug: string) => apiFetch<{ url: string }>(`/publish/${slug}/preview`, { method: 'POST' }),
         publish: (slug: string) => apiFetch<{ success: boolean }>(`/publish/${slug}`, { method: 'POST' }),
     },
+
+    landingPages: {
+        list: (limit = 20, offset = 0) => apiFetch<{ items: LandingPage[]; total: number }>(`/landing-pages?limit=${limit}&offset=${offset}`),
+        get: (id: string) => apiFetch<LandingPage>(`/landing-pages/${id}`),
+        generate: (data: LandingPageGenerateInput) =>
+            apiFetch<LandingPage>('/landing-pages/generate', { method: 'POST', body: JSON.stringify(data) }),
+        publish: (id: string) =>
+            apiFetch<{ url: string }>(`/landing-pages/${id}/publish`, { method: 'POST' }),
+        unpublish: (id: string) =>
+            apiFetch<{ success: boolean }>(`/landing-pages/${id}/unpublish`, { method: 'POST' }),
+        delete: (id: string) =>
+            apiFetch<{ success: boolean }>(`/landing-pages/${id}`, { method: 'DELETE' }),
+    },
+
+    upload: (file: File) => {
+        const formData = new FormData()
+        formData.append('file', file)
+        return apiFetch<{ url: string }>('/upload', { method: 'POST', body: formData })
+    }
+}
+
+
+export interface LandingPage {
+    id: string
+    title: string
+    slug: string
+    keyword: string
+    description: string
+    template: 'landing' | 'article'
+    status: 'draft' | 'published' | 'archived'
+    version: number
+    created_at: string
+    updated_at: string
+    generated_html?: string
+    live_html?: string
+}
+
+export interface LandingPageGenerateInput {
+    title: string
+    keyword: string
+    template: 'landing' | 'article'
+    creatives: Array<{ type: 'image' | 'video'; url: string; alt?: string }>
 }
