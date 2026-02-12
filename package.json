@@ -1,0 +1,18 @@
+{
+  "name": "meta-termux",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently --prefix-colors bgBlue.bold,bgMagenta.bold \"npm run dev -w apps/server\" \"npm run dev -w apps/client\"",
+    "build": "npm run build -w apps/server && npm run build -w apps/client",
+    "lint": "npm run lint -w apps/client"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0",
+    "typescript": "^5"
+  }
+}
