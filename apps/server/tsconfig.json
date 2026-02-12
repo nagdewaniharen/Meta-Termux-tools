@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target":           "ES2020",
+    "module":           "ESNext",
+    "moduleResolution": "bundler",
+    "strict":           true,
+    "esModuleInterop":  true,
+    "skipLibCheck":     true,
+    "noEmit":           true,
+    "paths": {
+      "@/*":           ["./src/*"],
+      "@meta/shared":  ["../../packages/shared/src/index"]
+    }
+  },
+  "include":  ["src"],
+  "exclude":  ["node_modules", "dist"]
+}
